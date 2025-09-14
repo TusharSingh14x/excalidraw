@@ -685,6 +685,34 @@ describe("history", () => {
         }),
       ]);
     });
+      Keyboard.undo();
+      expect(API.getUndoStack().length).toBe(0);
+      expect(API.getRedoStack().length).toBe(1);
+      expect(h.elements).toEqual([
+        expect.objectContaining({
+          type: "image",
+          fileId: expect.any(String),
+          x: expect.toBeNonNaNNumber(),
+          y: expect.toBeNonNaNNumber(),
+          isDeleted: true,
+          ...deerImageDimensions,
+        }),
+      ]);
+
+      Keyboard.redo();
+      expect(API.getUndoStack().length).toBe(1);
+      expect(API.getRedoStack().length).toBe(0);
+      expect(h.elements).toEqual([
+        expect.objectContaining({
+          type: "image",
+          fileId: expect.any(String),
+          x: expect.toBeNonNaNNumber(),
+          y: expect.toBeNonNaNNumber(),
+          isDeleted: false,
+          ...deerImageDimensions,
+        }),
+      ]);
+    });
 
     it("should create new history entry on embeddable link drag&drop", async () => {
       await render(<Excalidraw handleKeyboardGlobally={true} />);
